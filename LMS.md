@@ -415,3 +415,14 @@ Completed the initial full-stack LMS foundation in this Next.js app.
 * Added an interactive user manager so newly added users appear in the list immediately.
 * Added edit and delete icon actions in the All Users tab.
 * User updates and deletes now update the visible list immediately without a page refresh.
+
+### Staff and Student Live Updates
+
+* Staff task dashboard and task list now update task status and summary counts immediately without refreshing the page.
+* Student enquiry submissions now appear in the enquiry list immediately after submit without refreshing the page.
+
+### Dashboard Visual Refresh
+
+* Upgraded admin, staff, and student dashboards with icon stat cards, richer panels, quick-action cards, and subtle hover/entry animations.
+* Added reusable dashboard UI components for stat cards, panels, and quick actions.
+* Added lightweight CSS animation utilities for dashboard cards and textured content bands.
