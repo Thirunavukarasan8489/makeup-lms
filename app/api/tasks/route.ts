@@ -42,8 +42,12 @@ export async function POST(request: NextRequest) {
       status: body.status ?? "pending",
       createdBy: guard.session?.id,
     });
+    const populatedTask = await Task.findById(task._id).populate(
+      "assignedTo",
+      "name email",
+    );
 
-    return NextResponse.json({ task }, { status: 201 });
+    return NextResponse.json({ task: populatedTask }, { status: 201 });
   } catch (error) {
     return jsonError(error instanceof Error ? error.message : "Could not create task", 500);
   }

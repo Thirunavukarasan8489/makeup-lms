@@ -405,3 +405,13 @@ Completed the initial full-stack LMS foundation in this Next.js app.
 
 * Admin task assignment now shows a staff dropdown populated with staff names and emails.
 * Task cards now show the assigned staff member name and email.
+* Admin task management now has submenus for assigning a new task and viewing all assigned tasks.
+* Added admin edit and delete actions for assigned tasks.
+* Added `PUT /api/tasks/[id]` and `DELETE /api/tasks/[id]` for task updates and deletion.
+
+### User Management Update
+
+* Admin user management now has submenus for adding a user and viewing all users.
+* Added an interactive user manager so newly added users appear in the list immediately.
+* Added edit and delete icon actions in the All Users tab.
+* User updates and deletes now update the visible list immediately without a page refresh.

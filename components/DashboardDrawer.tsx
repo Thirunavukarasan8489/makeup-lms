@@ -258,13 +258,13 @@ export function DashboardDrawer({
       >
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 pt-20 sm:px-6 lg:px-8 lg:pt-6">
           <header className="border-b border-stone-200 pb-5">
-            <p className="text-sm font-semibold uppercase tracking-wide text-rose-700">
+            {/* <p className="text-sm font-semibold uppercase tracking-wide text-rose-700">
               Makeup LMS
-            </p>
+            </p> */}
             <h1 className="mt-1 text-3xl font-bold">{title}</h1>
-            <p className="mt-1 text-sm text-stone-600">
+            {/* <p className="mt-1 text-sm text-stone-600">
               Signed in as {user.name} ({user.role})
-            </p>
+            </p> */}
           </header>
           {children}
         </div>
