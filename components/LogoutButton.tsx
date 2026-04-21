@@ -34,7 +34,15 @@ export function LogoutButton({ collapsed }: { collapsed: boolean }) {
       }`}
     >
       <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-stone-100 text-base">
-        ↪
+        <svg
+          className="h-4 w-4 fill-none stroke-current stroke-2"
+          viewBox="0 0 24 24"
+          aria-hidden
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10 17l5-5-5-5" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12H3" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21 3v18" />
+        </svg>
       </span>
       <span
         className={`truncate transition-[opacity,width] duration-200 ${

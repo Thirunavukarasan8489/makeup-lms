@@ -12,7 +12,8 @@ type EndpointFormProps = {
 export function EndpointForm({ endpoint, button, children }: EndpointFormProps) {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const payload = Object.fromEntries(form);
     const response = await fetch(endpoint, {
       method: "POST",
@@ -22,7 +23,7 @@ export function EndpointForm({ endpoint, button, children }: EndpointFormProps) 
 
     if (response.ok) {
       toast.success("Saved successfully");
-      event.currentTarget.reset();
+      formElement.reset();
       return;
     }
 

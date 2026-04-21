@@ -3,14 +3,14 @@ import { DashboardShell } from "@/components/DashboardShell";
 import { EndpointForm, TextArea, TextInput } from "@/components/Forms";
 import { TaskStatusForm } from "@/components/TaskStatusForm";
 import { getSession } from "@/lib/auth";
-import { getTasks } from "@/lib/dashboard";
+import { getTasks, getUsers } from "@/lib/dashboard";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminTasksPage() {
   const user = await getSession();
   if (!user) redirect("/login");
-  const tasks = await getTasks();
+  const [tasks, staff] = await Promise.all([getTasks(), getUsers("staff")]);
 
   return (
     <DashboardShell user={user} title="Task Management">
@@ -19,7 +19,24 @@ export default async function AdminTasksPage() {
           <h2 className="text-xl font-bold">Assign Staff Task</h2>
           <TextInput name="title" label="Title" required />
           <TextArea name="description" label="Description" required />
-          <TextInput name="assignedTo" label="Assigned staff ID" required />
+          <label className="grid gap-2 text-sm font-medium text-stone-700">
+            Assign to staff
+            <select
+              name="assignedTo"
+              required
+              defaultValue=""
+              className="h-10 rounded-md border border-stone-300 px-3 outline-none focus:border-rose-500"
+            >
+              <option value="" disabled>
+                Select staff member
+              </option>
+              {staff.map((member) => (
+                <option key={String(member._id)} value={String(member._id)}>
+                  {String(member.name)} ({String(member.email)})
+                </option>
+              ))}
+            </select>
+          </label>
           <label className="grid gap-2 text-sm font-medium text-stone-700">
             Type
             <select name="type" className="h-10 rounded-md border border-stone-300 px-3">
@@ -36,9 +53,20 @@ export default async function AdminTasksPage() {
                 <span className="text-sm font-semibold uppercase text-rose-700">{String(task.status)}</span>
               </div>
               <p className="mt-2 text-sm leading-6 text-stone-600">{String(task.description)}</p>
+              <p className="mt-3 text-sm font-medium text-stone-500">
+                Assigned to:{" "}
+                {typeof task.assignedTo === "object" && task.assignedTo
+                  ? `${String(task.assignedTo.name)} (${String(task.assignedTo.email)})`
+                  : "Staff member"}
+              </p>
               <TaskStatusForm taskId={String(task._id)} currentStatus={String(task.status)} />
             </article>
           ))}
+          {tasks.length === 0 ? (
+            <p className="rounded-lg border border-stone-200 bg-white p-5 text-stone-600 shadow-sm">
+              No tasks assigned yet.
+            </p>
+          ) : null}
         </div>
       </section>
     </DashboardShell>

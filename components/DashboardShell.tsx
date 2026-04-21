@@ -4,23 +4,23 @@ import type { SessionUser } from "@/lib/types";
 
 const nav = {
   admin: [
-    { label: "Dashboard", href: "/admin/dashboard", icon: "⌂" },
-    { label: "Users", href: "/admin/users", icon: "U" },
-    { label: "Staff", href: "/admin/staff", icon: "S" },
-    { label: "Courses", href: "/admin/courses", icon: "C" },
-    { label: "Tasks", href: "/admin/tasks", icon: "T" },
+    { label: "Dashboard", href: "/admin/dashboard", icon: "dashboard" },
+    { label: "Users", href: "/admin/users", icon: "users" },
+    { label: "Staff", href: "/admin/staff", icon: "staff" },
+    { label: "Courses", href: "/admin/courses", icon: "courses" },
+    { label: "Tasks", href: "/admin/tasks", icon: "tasks" },
   ],
   staff: [
-    { label: "Dashboard", href: "/staff/dashboard", icon: "⌂" },
-    { label: "Tasks", href: "/staff/tasks", icon: "T" },
+    { label: "Dashboard", href: "/staff/dashboard", icon: "dashboard" },
+    { label: "Tasks", href: "/staff/tasks", icon: "tasks" },
   ],
   user: [
-    { label: "Dashboard", href: "/user/dashboard", icon: "⌂" },
-    { label: "Courses", href: "/user/courses", icon: "C" },
-    { label: "Certificate", href: "/user/certificate", icon: "A" },
-    { label: "Enquiry", href: "/user/enquiry", icon: "?" },
+    { label: "Dashboard", href: "/user/dashboard", icon: "dashboard" },
+    { label: "Courses", href: "/user/courses", icon: "courses" },
+    { label: "Certificate", href: "/user/certificate", icon: "certificate" },
+    { label: "Enquiry", href: "/user/enquiry", icon: "enquiry" },
   ],
-};
+} as const;
 
 export function DashboardShell({
   user,
@@ -32,7 +32,7 @@ export function DashboardShell({
   children: ReactNode;
 }) {
   return (
-    <DashboardDrawer user={user} title={title} nav={nav[user.role]}>
+    <DashboardDrawer user={user} title={title} nav={[...nav[user.role]]}>
       {children}
     </DashboardDrawer>
   );

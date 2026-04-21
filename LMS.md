@@ -393,9 +393,15 @@ Completed the initial full-stack LMS foundation in this Next.js app.
 * Added mobile slide-in drawer with overlay and automatic close on route change.
 * Dashboard navigation is now shared across admin, staff, and student pages.
 * Added a drawer logout button that clears the auth cookie and returns users to login.
+* Replaced placeholder drawer letters with relevant SVG icons for dashboard, users, staff, courses, tasks, certificates, enquiries, and logout.
 
 ### Toast Notifications
 
 * Added `react-toastify` for success and failure messages.
 * Added a global toast container in the root layout.
 * Replaced inline form messages with toast notifications for auth, CRUD forms, enrollment, task updates, and logout.
+
+### Task Management Update
+
+* Admin task assignment now shows a staff dropdown populated with staff names and emails.
+* Task cards now show the assigned staff member name and email.
