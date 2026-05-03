@@ -31,6 +31,20 @@ export function signCloudinaryParams(params: CloudinarySignatureParams) {
     .digest("hex");
 }
 
+export function getCloudinaryVideoUrls(publicId: string) {
+  const { cloudName } = getCloudinaryConfig();
+  const encodedPublicId = publicId
+    .split("/")
+    .map((part) => encodeURIComponent(part))
+    .join("/");
+  const deliveryBase = `https://res.cloudinary.com/${cloudName}/video/upload`;
+
+  return {
+    hlsUrl: `${deliveryBase}/sp_auto/${encodedPublicId}.m3u8`,
+    fallbackUrl: `${deliveryBase}/${encodedPublicId}.mp4`,
+  };
+}
+
 export async function deleteCloudinaryVideo(publicId: string) {
   const { cloudName, apiKey } = getCloudinaryConfig();
   const timestamp = Math.round(Date.now() / 1000);
@@ -46,9 +60,14 @@ export async function deleteCloudinaryVideo(publicId: string) {
     {
       method: "POST",
       body: formData,
+      signal: AbortSignal.timeout(15000),
     },
   );
   const data = await response.json().catch(() => null);
+
+  if (data?.result === "not found") {
+    return data;
+  }
 
   if (!response.ok || data?.result === "error") {
     throw new Error(data?.error?.message ?? "Could not delete Cloudinary video");

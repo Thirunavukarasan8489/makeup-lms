@@ -437,12 +437,17 @@ Completed the initial full-stack LMS foundation in this Next.js app.
   * `GET /api/videos`
   * `POST /api/videos`
   * `DELETE /api/videos`
-* Added `/admin/upload` with course selection, title, description, video file picker, direct-to-Cloudinary upload progress, metadata saving, previews, and delete actions.
+* Added `/admin/upload` with course selection, title, description, video file picker, direct-to-Cloudinary upload progress, metadata saving, management lists, and delete actions.
 * Uploads are no longer blocked when no course exists; the metadata API auto-creates an `Unassigned Videos` course for those first uploads.
 * Added an Upload item to the admin dashboard drawer.
 * Expanded course video metadata to include description, Cloudinary public ID, URL, content type, file size, and upload timestamp.
 * Updated the admin course list to show uploaded video titles and descriptions.
 * Removed the old storage helper and upload URL route from the implementation.
+* Admin video previews are hidden to avoid exposing direct downloadable Cloudinary URLs in the management screen.
+* Video deletion now removes LMS metadata even if Cloudinary cleanup times out, and reports a cleanup warning for follow-up.
+* Simplified the admin upload page to one `All Uploaded Videos` management list.
+* Added admin-only edit and delete icon actions for uploaded videos.
+* Added `PUT /api/videos` for updating uploaded video title and description metadata.
 
 ### Cloudinary Configuration Notes
 
@@ -453,3 +458,24 @@ The upload flow uses these `.env` values:
 * `CLOUDINARY_API_SECRET`
 
 The browser uploads directly to Cloudinary, while the server signs upload and delete requests so the API secret is never exposed.
+
+### Student Secure Video Player Update - 2026-05-03
+
+* Added a protected student course watch page at `/user/courses/[id]`.
+* Added a student-only `POST /api/video-access` route that verifies enrollment before returning Cloudinary stream URLs.
+* Added a student-only `POST /api/video-progress` route that updates enrollment progress from playback activity.
+* Added an HLS-capable `StudentVideoPlayer` with:
+  * `hls.js` playback for Cloudinary adaptive streams
+  * fallback MP4 playback
+  * moving watermark with student email and current time
+  * disabled right-click on the player
+  * basic blocked DevTools/download keyboard shortcuts
+  * `controlsList` download deterrents
+  * lesson playlist navigation
+* Added a `Watch lessons` action to enrolled course cards.
+* Added runtime dependency:
+  * `hls.js`
+
+### Student Video Security Notes
+
+The player verifies authentication and enrollment server-side before returning video playback URLs. The watermark and browser controls discourage casual sharing and downloading, but screen recording and advanced network capture cannot be fully prevented in a browser-only player.

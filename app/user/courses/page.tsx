@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { DashboardShell } from "@/components/DashboardShell";
 import { EnrollButton } from "@/components/EnrollButton";
 import { getSession } from "@/lib/auth";
@@ -31,6 +32,14 @@ export default async function UserCoursesPage() {
               courseId={String(course._id)}
               enrolled={enrolledCourseIds.has(String(course._id))}
             />
+            {enrolledCourseIds.has(String(course._id)) ? (
+              <Link
+                href={`/user/courses/${String(course._id)}`}
+                className="mt-3 inline-flex h-10 items-center justify-center rounded-md bg-stone-950 px-4 text-sm font-semibold text-white transition hover:bg-rose-700"
+              >
+                Watch lessons
+              </Link>
+            ) : null}
           </article>
         ))}
         {courses.length === 0 ? (

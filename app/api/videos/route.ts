@@ -4,6 +4,14 @@ import { jsonError, requireRole } from "@/lib/api";
 import { deleteCloudinaryVideo } from "@/lib/cloudinary";
 import Course from "@/models/Course";
 
+type CourseVideo = {
+  _id?: { toString(): string };
+  key?: string;
+  publicId?: string;
+  title?: string;
+  description?: string;
+};
+
 export async function GET() {
   const guard = await requireRole(["admin"]);
   if (guard.error) return guard.error;
@@ -90,6 +98,49 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function PUT(request: NextRequest) {
+  const guard = await requireRole(["admin"]);
+  if (guard.error) return guard.error;
+
+  try {
+    const body = await request.json();
+    const courseId = String(body.courseId ?? "").trim();
+    const videoId = String(body.videoId ?? "").trim();
+    const publicId = String(body.publicId ?? body.key ?? "").trim();
+    const title = String(body.title ?? "").trim();
+    const description = String(body.description ?? "").trim();
+
+    if (!courseId || (!videoId && !publicId)) {
+      return jsonError("Course and video identifier are required");
+    }
+
+    if (!title) {
+      return jsonError("Video title is required");
+    }
+
+    await connectDB();
+    const course = await Course.findById(courseId);
+    if (!course) return jsonError("Course not found", 404);
+
+    const video = course.videos.find((item: CourseVideo) => {
+      return (
+        (videoId && item._id?.toString() === videoId) ||
+        (publicId && (item.publicId === publicId || item.key === publicId))
+      );
+    });
+
+    if (!video) return jsonError("Video not found", 404);
+
+    video.title = title;
+    video.description = description;
+    await course.save();
+
+    return NextResponse.json({ video, course });
+  } catch (error) {
+    return jsonError(error instanceof Error ? error.message : "Could not update video", 500);
+  }
+}
+
 export async function DELETE(request: NextRequest) {
   const guard = await requireRole(["admin"]);
   if (guard.error) return guard.error;
@@ -108,7 +159,7 @@ export async function DELETE(request: NextRequest) {
     const course = await Course.findById(courseId);
     if (!course) return jsonError("Course not found", 404);
 
-    const video = course.videos.find((item: { _id?: { toString(): string }; key?: string; publicId?: string }) => {
+    const video = course.videos.find((item: CourseVideo) => {
       return (
         (videoId && item._id?.toString() === videoId) ||
         (publicId && (item.publicId === publicId || item.key === publicId))
@@ -118,21 +169,29 @@ export async function DELETE(request: NextRequest) {
     if (!video) return jsonError("Video not found", 404);
 
     const cloudinaryPublicId = video.publicId || video.key;
+    let storageDeleteWarning = "";
     if (cloudinaryPublicId) {
-      await deleteCloudinaryVideo(cloudinaryPublicId);
+      try {
+        await deleteCloudinaryVideo(cloudinaryPublicId);
+      } catch (error) {
+        storageDeleteWarning =
+          error instanceof Error
+            ? error.message
+            : "Cloudinary delete did not complete";
+      }
     }
 
     course.set(
       "videos",
       course.videos.filter(
-        (item: { _id?: { toString(): string }; key?: string; publicId?: string }) =>
+        (item: CourseVideo) =>
           (videoId && item._id?.toString() !== videoId) ||
           (!videoId && item.publicId !== publicId && item.key !== publicId),
       ),
     );
     await course.save();
 
-    return NextResponse.json({ video, course });
+    return NextResponse.json({ video, course, storageDeleteWarning });
   } catch (error) {
     return jsonError(error instanceof Error ? error.message : "Could not delete video", 500);
   }
