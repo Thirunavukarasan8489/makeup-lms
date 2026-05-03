@@ -28,6 +28,18 @@ export default async function AdminCoursesPage() {
               <p className="mt-3 text-sm font-medium text-stone-500">
                 Videos: {Array.isArray(course.videos) ? course.videos.length : 0}
               </p>
+              {Array.isArray(course.videos) && course.videos.length > 0 ? (
+                <div className="mt-4 grid gap-2">
+                  {course.videos.map((video) => (
+                    <div key={String(video._id ?? video.url)} className="rounded-md bg-[#fbf7f4] px-3 py-2">
+                      <p className="text-sm font-semibold text-stone-950">{String(video.title)}</p>
+                      {video.description ? (
+                        <p className="mt-1 text-xs leading-5 text-stone-600">{String(video.description)}</p>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </article>
           ))}
         </div>

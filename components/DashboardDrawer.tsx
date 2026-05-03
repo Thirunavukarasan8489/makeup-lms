@@ -11,6 +11,7 @@ type IconName =
   | "users"
   | "staff"
   | "courses"
+  | "uploadvideo"
   | "tasks"
   | "certificate"
   | "enquiry";
@@ -62,6 +63,14 @@ function DrawerIcon({ name }: { name: IconName }) {
           <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
           <path d="M8 6h8" />
           <path d="M8 10h6" />
+        </svg>
+      );
+    case "uploadvideo":
+      return (
+        <svg className={iconBase} viewBox="0 0 24 24" aria-hidden>
+          <path d="M12 16V4" />
+          <path d="M7 9l5-5 5 5" />
+          <path d="M20 16.5A4.5 4.5 0 0 1 15.5 21h-7A4.5 4.5 0 0 1 4 16.5" />
         </svg>
       );
     case "tasks":

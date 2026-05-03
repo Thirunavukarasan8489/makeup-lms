@@ -272,7 +272,7 @@ The application must be built using **Next.js (Full Stack)**:
 
 * Store videos in:
 
-  * Cloudinary / AWS S3
+  * Cloudinary
 * Store certificate PDFs
 
 ---
@@ -375,7 +375,7 @@ Completed the initial full-stack LMS foundation in this Next.js app.
 
 * `.env` currently contains `MONGO_URI=mongodb://0.0.0.0:27017/makeup-lms`.
 * Add `JWT_SECRET` to `.env` before production deployment.
-* Video and certificate file upload storage is scaffolded by URL fields; Cloudinary/AWS upload integration is still a future enhancement.
+* Cloudinary video upload is implemented for admin course videos; certificate file storage is still scaffolded by URL fields.
 
 ### Security Fix - Auth Forms
 
@@ -426,3 +426,30 @@ Completed the initial full-stack LMS foundation in this Next.js app.
 * Upgraded admin, staff, and student dashboards with icon stat cards, richer panels, quick-action cards, and subtle hover/entry animations.
 * Added reusable dashboard UI components for stat cards, panels, and quick actions.
 * Added lightweight CSS animation utilities for dashboard cards and textured content bands.
+
+### Cloudinary Video Upload Update - 2026-05-03
+
+* Switched admin course video uploads to Cloudinary.
+* Added Cloudinary signature and delete helpers in `lib/cloudinary.ts`.
+* Kept `axios` for real browser upload progress tracking.
+* Added admin-only API routes:
+  * `POST /api/upload-signature`
+  * `GET /api/videos`
+  * `POST /api/videos`
+  * `DELETE /api/videos`
+* Added `/admin/upload` with course selection, title, description, video file picker, direct-to-Cloudinary upload progress, metadata saving, previews, and delete actions.
+* Uploads are no longer blocked when no course exists; the metadata API auto-creates an `Unassigned Videos` course for those first uploads.
+* Added an Upload item to the admin dashboard drawer.
+* Expanded course video metadata to include description, Cloudinary public ID, URL, content type, file size, and upload timestamp.
+* Updated the admin course list to show uploaded video titles and descriptions.
+* Removed the old storage helper and upload URL route from the implementation.
+
+### Cloudinary Configuration Notes
+
+The upload flow uses these `.env` values:
+
+* `CLOUDINARY_CLOUD_NAME`
+* `CLOUDINARY_API_KEY`
+* `CLOUDINARY_API_SECRET`
+
+The browser uploads directly to Cloudinary, while the server signs upload and delete requests so the API secret is never exposed.
